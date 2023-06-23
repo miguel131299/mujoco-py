@@ -5,7 +5,7 @@ import os
 
 xml_path = 'manipulator.xml' #xml file (assumes this is in the same folder as this file)
 simend = 5 #simulation time
-print_camera_config = 1 #set to 1 to print camera config
+print_camera_config = 0 #set to 1 to print camera config
                         #this is useful for initializing view of the model)
 
 # For callback functions
@@ -136,13 +136,43 @@ init_controller(model,data)
 #set the controller
 mj.set_mjcb_control(controller)
 
+N = 500
+q0_start = 0
+q0_end = -1.57
+q1_start = 0
+q1_end = -2*3.14
+
+q0 = np.linspace(q0_start, q0_end, N)
+q1 = np.linspace(q1_start, q1_end, N)
+
+# qpos is position of the joints
+
+# initiliaze the angles
+data.qpos[0] = 0.0
+data.qpos[1] = 1.57
+i = 0
+time = 0
+dt = 0.001
+
 while not glfw.window_should_close(window):
-    time_prev = data.time
+    time_prev = time
 
-    while (data.time - time_prev < 1.0/60.0):
-        mj.mj_step(model, data)
+    while (time - time_prev < 1.0/60.0):
+        data.qpos[0] = q0[i]
+        data.qpos[1] = q1[i]
 
-    if (data.time>=simend):
+        # mj_foward is the function that computes the forward dynamics
+        mj.mj_forward(model, data)
+
+        # mj.mj_step(model, data)
+
+        time += dt
+
+    i += 1
+
+    print(data.site_xpos[0])
+
+    if (i >= N):
         break;
 
     # get framebuffer viewport
