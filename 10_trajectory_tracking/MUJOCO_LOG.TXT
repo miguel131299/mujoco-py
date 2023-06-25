@@ -1,0 +1,3 @@
+Sun Jun 25 16:26:43 2023
+WARNING: mju_openResource: unknown file '/home/miguel/Documents/mujoco-2.3.5/mujoco-py/10_trajectory_tracking/hello.xml'
+
